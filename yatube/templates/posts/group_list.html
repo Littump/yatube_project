@@ -2,13 +2,11 @@
 {% block content %}
 <!-- класс py-5 создает отступы сверху и снизу блока -->
 <div class="container py-5">
-    <h1>Лев Толстой – зеркало русской революции.</h1>
-    <p>{{ group }}</p>
+    <h1>{{ group.title }}</h1>
+    <p>{{ group.description }}</p>
     {% for post in page_obj %}
-        <article>
-            {% include 'includes/card.html' with author=post.author.get_full_name text=post.text date=post.pub_date|date:"d E Y" %}   
-            {% if not forloop.last %}<hr>{% endif %}
-        </article>
+        {% include 'includes/card.html' with author=post.author.get_full_name text=post.text date=post.pub_date|date:"d E Y" %}   
+        {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}       
     {% include 'posts/includes/paginator.html' %}
 <!-- под последним постом нет линии -->
