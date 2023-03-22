@@ -3,7 +3,24 @@
 {% block content %}
     <div class="container py-5">        
         <h1>Все посты пользователя {{author.username}} </h1>
-        <h3>Всего постов: {{cnt_posts_user}}</h3>   
+        <h3>Всего постов: {{cnt_posts_user}}</h3>  
+        {% if user.is_authenticated %} 
+            {% if following %}
+                <a
+                class="btn btn-lg btn-light"
+                href="{% url 'posts:profile_unfollow' author.username %}" role="button"
+                >
+                Отписаться
+                </a>
+            {% else %}
+                <a
+                    class="btn btn-lg btn-primary"
+                    href="{% url 'posts:profile_follow' author.username %}" role="button"
+                >
+                    Подписаться
+                </a>
+            {% endif %}
+        {% endif %}
         {% for post in page_obj %}
             <article>
             <ul>
@@ -15,6 +32,10 @@
                 Дата публикации: {{post.pub_date|date:"d E Y"}}
                 </li>
             </ul>
+            {% load thumbnail %}
+            {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                <img class="card-img my-2" src="{{ im.url }}">
+            {% endthumbnail %}    
             <p>
                 {{ post.text|linebreaksbr }}
             </p>
@@ -25,7 +46,6 @@
             {% endif %}        
             {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}         
-        <!-- Остальные посты. после последнего нет черты -->
         {% include 'posts/includes/paginator.html' %} 
     </div>
 {% endblock %}

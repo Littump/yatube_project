@@ -1,6 +1,8 @@
+from http import HTTPStatus
+
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
-from http import HTTPStatus
+from django.core.cache import cache
 
 from ..models import Group, Post
 
@@ -24,6 +26,7 @@ class PostURLTests(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.guest_client = Client()
         self.user_no_author = User.objects.create_user(username='HasNoName2')
         self.authorized_client_no_author = Client()

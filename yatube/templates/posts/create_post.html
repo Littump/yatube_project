@@ -9,7 +9,7 @@
             {% if is_edit %}Редактирование поста{% else %}Новый пост{% endif %}           
           </div>
           <div class="card-body">        
-            <form method="post" {% if is_edit %} action="{% url 'posts:post_edit' post_id %}" {% else %} action="{% url 'posts:post_create'%}" {% endif %}>
+            <form method="post" enctype="multipart/form-data" {% if is_edit %} action="{% url 'posts:post_edit' post_id %}" {% else %} action="{% url 'posts:post_create'%}" {% endif %}>
               {% csrf_token %}
               {% for field in form %}
                 <div class="form-group row my-3 p-3">
