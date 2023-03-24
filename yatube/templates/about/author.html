@@ -1,10 +1,27 @@
-<!-- templates/about/author.html -->
 {% extends "base.html" %}
-{% block title %}Об авторе проекта{% endblock %}
+{% load static %}
 {% block content %}
-<h1>Привет, я автор</h1>
-<p>
-  Тут я размещу информацию о себе, используя свои умения верстать.
-  Картинки, блоки, элементы бустрап. А может быть, просто напишу несколько абзацев текста. 
-</p>
+<div class="container mt-4 mb-4">
+  <div class="row">
+    <div class="col-md-4">
+      <img src="{% static 'img/photo.jpg' %}" alt="Фото автора" class="img-fluid rounded" style="max-height: 700px;">
+    </div>
+    <div class="col-md-8">
+      <h1>Роман Якимов</h1>
+      <p><strong>Возраст:</strong> 19 лет (2003 год рождения)</p>
+      <p><strong>Образование:</strong> Студент первого курса НИТУ "МИСИС" г. Москва (2022 - 2026).</p>
+      <p><strong>Опыт работы в разработке:</strong></p>
+      <ul>
+        <li>Работа на фриланс - разработка телеграмм-ботов (aiogram).</li>
+        <li>Создание сайтов на Django.</li>
+        <li>База данных SQLLite, DjangoORM.</li>
+      </ul>
+      <p><strong>Ключевые навыки:</strong> Python, Django, HTML/CSS, SQL, Git, Алгоритмы, Структуры данных</p>
+      <p><strong>Цели и стремления в карьере:</strong> Получение опыта в разработке крупных и сложных проектов, улучшение навыков и продвижение по карьерной лестнице.</p>
+      <p><strong>Контактная информация:</strong></p>
+      <ul>
+        <li>Телеграмм: <a href="https://t.me/littump">@littump</a></li>
+        <li>Почта: <a href="mailto:littump@yandex.ru">littump@yandex.ru</a></li>
+  </div>
+</div>
 {% endblock %}

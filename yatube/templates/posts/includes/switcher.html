@@ -1,12 +1,12 @@
 {% if user.is_authenticated %}
   <div class="row my-3">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-pills justify-content-center">
       <li class="nav-item">
         <a 
           class="nav-link {% if index %}active{% endif %}"
           href="{% url 'posts:index' %}"
         >
-          Все авторы
+          <h4 class="mb-0">Все авторы</h4>
         </a>
       </li>
       <li class="nav-item">
@@ -14,9 +14,16 @@
            class="nav-link {% if follow %}active{% endif %}"
            href="{% url 'posts:follow_index' %}"
         >
-          Избранные авторы
+          <h4 class="mb-0">Подписки</h4>
         </a>
       </li>
     </ul>
   </div>
 {% endif %}
+
+<style>
+  .nav-pills .nav-link.active {
+    background-color: #1c3faa;
+    color: #fff;
+  }
+</style>

@@ -1,70 +1,111 @@
 {% extends 'base.html' %}
-{% block title %}Пост {{post.text|truncatechars:30}}{% endblock %}
+
+{% load widget_tweaks %}
+{% load static %}
+
 {% block content %}
-    <div class="row">
-    <aside class="col-12 col-md-3">
-        <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            Дата публикации: {{post.pub_date|date:"d E Y"}}
-        </li>
-        {% if post.group %}   
-            <li class="list-group-item">
-                Группа: {{post.group}}
-                <a href="{% url 'posts:group_posts' post.group.slug %}">
-                все записи группы
-                </a>
-            </li>
-        {% endif %}  
-        <li class="list-group-item">
-            Автор: {{username}}
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            Всего постов автора:  <span > {{cnt_posts_user}} </span>
-        </li>
-        <li class="list-group-item">
-            <a href="{% url 'posts:profile' post.author.username %}">
-            все посты пользователя
-            </a>
-        </li>
-        </ul>
-        {% load thumbnail %}
-        {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-            <img class="card-img my-2" src="{{ im.url }}">
-        {% endthumbnail %}
-    </aside>
-    <article class="col-12 col-md-9">
-        <p>
-        {{ post.text|linebreaksbr }}
-        </p>
-    </article>
-    </div> 
-    {% load user_filters %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-3">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Дата публикации: {{post.pub_date|date:"d E Y"}}
+                        </li>
+                        {% if post.group %}   
+                            <li class="list-group-item">
+                                Группа: {{post.group}}
+                                <a href="{% url 'posts:group_posts' post.group.slug %}">
+                                    <button class="btn btn-sm btn-outline-secondary">Все записи группы</button>
+                                </a>
+                            </li>
+                        {% endif %}  
+                        <li class="list-group-item">
+                            Автор: {% if post.author.get_full_name %} {{ post.author.get_full_name }} {% else %} неизвестный {% endif %}
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Всего постов автора: <span class="badge bg-secondary">{{cnt_posts_user}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'posts:profile' post.author.username %}">
+                                <button class="btn btn-sm btn-outline-secondary">Все посты пользователя</button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-9">
+                    {% load thumbnail %}
+                    {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                        <img class="card-img-top" src="{{ im.url }}" alt="{{ post.text }}">
+                    {% endthumbnail %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.text|linebreaksbr }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% if user.is_authenticated %}
-        <div class="card my-4">
-            <h5 class="card-header">Добавить комментарий:</h5>
-            <div class="card-body">
-            <form method="post" action="{% url 'posts:add_comment' post.id %}">
-                {% csrf_token %}      
-                <div class="form-group mb-2">
-                {{ form.text|addclass:"form-control" }}
+    <div class="card my-4">
+        <div class="card-body">
+            <form method="post" action="{% url 'posts:add_comment' post.id %}" class="w-100">
+                {% csrf_token %}
+                <div class="form-floating mb-3" style="height: 150px;">
+                    {{ form.text|add_class:"form-control h-100" }}
+                    <label for="{{ form.text.id_for_label }}" id="comment-label">Напишите свой комментарий</label>
                 </div>
                 <button type="submit" class="btn btn-primary">Отправить</button>
             </form>
-            </div>
         </div>
-    {% endif %}
+    </div>
+    
+    <script>
+        var commentField = document.getElementById("{{ form.text.id_for_label }}");
+        var commentLabel = document.getElementById("comment-label");
+    
+        commentField.addEventListener("focus", function() {
+            if (commentField.value.length == 0) {
+                commentLabel.style.display = "block";
+            }
+            commentField.setSelectionRange(0, 0);
+        });
+        
+        commentField.addEventListener("blur", function() {
+            if (commentField.value.length == 0) {
+                commentLabel.style.display = "block";
+            }
+        });
+        
+        commentField.addEventListener("keydown", function() {
+            commentLabel.style.display = "none";
+        });
+        
+        if (commentField.value.length > 0) {
+            commentLabel.style.display = "none";
+        }
+    </script>
+{% endif %}
+
+    
+    
+    
+
 
     {% for comment in comments %}
-    <div class="media mb-4">
-        <div class="media-body">
-        <h5 class="mt-0">
-            <a href="{% url 'posts:profile' comment.author.username %}">
-            {{ comment.author.username }}
-            </a>
-        </h5>
-        <p>
-            {{ comment.text }}
-        </p>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <h6 class="mb-0">{{ comment.author.username }}</h6>
+                        <a href="{% url 'posts:profile' username=comment.author.username %}" style="margin-left: 10px;">Перейти</a>
+                      </div>
+                      
+                    <small class="text-muted">{{ comment.created }}</small>
+                    <p>{{ comment.text }}</p>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}

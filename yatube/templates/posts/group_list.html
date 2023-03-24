@@ -5,9 +5,11 @@
     <h1>{{ group.title }}</h1>
     <p>{{ group.description }}</p>
     {% for post in page_obj %}
-        {% include 'includes/card.html' with author=post.author.get_full_name image=post.image text=post.text date=post.pub_date|date:"d E Y" %}   
-        {% if not forloop.last %}<hr>{% endif %}
-    {% endfor %}       
+            <article>
+                {% include 'includes/card.html' with post=post %}   
+                {% if not forloop.last %}<hr>{% endif %}
+            </article>
+        {% endfor %}       
     {% include 'posts/includes/paginator.html' %}
 <!-- под последним постом нет линии -->
 </div>

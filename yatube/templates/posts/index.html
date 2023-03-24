@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Последние обновления на сайте{% endblock %}
+{% comment %} {% block title %}Последние обновления на сайте{% endblock %} {% endcomment %}
 {% block content %}
 {% include 'posts/includes/switcher.html' %}
-<div class="container py-5">     
+<div class="container py-4">     
     <h1>Последние обновления на сайте</h1>
         {% for post in page_obj %}
             <article>
-                {% include 'includes/card.html' with author=post.author.get_full_name image=post.image text=post.text date=post.pub_date|date:"d E Y" %}   
-                {% if post.group %}   
-                    <a href="{% url 'posts:group_posts' post.group.slug %}">все записи группы</a>
-                {% endif %} 
+                {% include 'includes/card.html' with post=post %}   
                 {% if not forloop.last %}<hr>{% endif %}
             </article>
         {% endfor %} 

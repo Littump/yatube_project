@@ -1,15 +1,35 @@
 {% load thumbnail %}
-<article>
-    <ul>
-        <li>
-            Автор: {{ author }}
-        </li>
-        <li>
-            Дата публикации: {{ date }}
-        </li>
-    </ul>
-    {% thumbnail image "960x339" crop="center" upscale=True as im %}
-        <img class="card-img my-2" src="{{ im.url }}">
-    {% endthumbnail %}
-    <p>{{ text|linebreaksbr}}</p> 
-</article>
+
+{% with request.resolver_match.view_name as view_name %} 
+
+    <article style="background-color:#ECF0F1; border-radius:10px; padding:10px; box-shadow: 5px 5px #1c3faa;">
+        <ul style="list-style:none; margin:0; padding:0;">
+            <li>
+                Автор: {% if post.author.get_full_name %} {{ post.author.get_full_name }} {% else %} неизвестный {% endif %}
+            </li>
+            <li>
+                Дата публикации: {{ post.pub_date|date:"d E Y" }}
+            </li>
+        </ul>
+        {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+            <img class="card-img my-2" style="border-radius:10px;" src="{{ im.url }}">
+        {% endthumbnail %}
+        <p style="color:#1c3faa;">{{ post.text|linebreaksbr}}</p> 
+        <div style="display:flex; justify-content: space-between;">
+            <div>
+                <a href="{% url 'posts:post_detail' post_id=post.id %}" class="btn btn-primary">Подробнее</a>
+            </div>
+            <div>
+                {% if request.user == post.author %}
+                    <a href="{% url 'posts:post_edit' post_id=post.id %}" class="btn btn-secondary">Изменить</a>
+                {% endif %}
+                {% if view_name != "posts:profile" %} 
+                    <a href="{% url 'posts:profile' username=post.author.username %}" class="btn btn-secondary">Автор</a>
+                {% endif %}
+                {% if view_name != "posts:group_posts" and post.group %} 
+                    <a href="{% url 'posts:group_posts' slug=post.group.slug %}" class="btn btn-secondary">Группа</a>
+                {% endif %}
+            </div>
+        </div>
+    </article> 
+{% endwith %}

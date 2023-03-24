@@ -1,39 +1,51 @@
 {% extends 'base.html' %}
-{% block title %} {% if is_edit %}Редактировать пост{% else %}Новый пост{% endif %} {% endblock %}
+
 {% block content %}
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-8 p-5">
-        <div class="card">
-          <div class="card-header">       
-            {% if is_edit %}Редактирование поста{% else %}Новый пост{% endif %}           
+        <div class="card shadow-sm border-0" style="background-color: #f9f9f9; border-radius: 20px;">
+          <div class="card-header" style="background-color: #f9f9f9; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <h3 class="text-center py-3" style="color: #1c3faa;">{% if is_edit %}Редактирование поста{% else %}Новый пост{% endif %}</h3>
           </div>
-          <div class="card-body">        
+          <div class="card-body">
             <form method="post" enctype="multipart/form-data" {% if is_edit %} action="{% url 'posts:post_edit' post_id %}" {% else %} action="{% url 'posts:post_create'%}" {% endif %}>
               {% csrf_token %}
               {% for field in form %}
-                <div class="form-group row my-3 p-3">
-                  <label for="{{ field.id_for_label }}">
-                    {{ field.label }}
-                    {% if field.field.required %}
-                      <span class="required text-danger">*</span>
+                {% if field.name == 'text' %}
+                  <div class="form-group my-3 p-3">
+                    <label for="{{ field.id_for_label }}">
+                      {{ field.label }}
+                      {% if field.field.required %}
+                        <span class="required text-danger">*</span>
+                      {% endif %}
+                    </label>
+                    <div class="card">
+                      {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                      <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text }}</small>
                     {% endif %}
-                  </label>
-                  {{ field }}
-                  {% if field.help_text %}
-                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text }}</small>
-                  {% endif %}
-                </div>
+                  </div>
+                {% else %}
+                  <div class="form-group my-3 p-3">
+                    <label for="{{ field.id_for_label }}">
+                      {{ field.label }}
+                      {% if field.field.required %}
+                        <span class="required text-danger">*</span>
+                      {% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                      <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                  </div>
+                {% endif %}
               {% endfor %}
-              <div class="d-flex justify-content-end"> 
-                <button type="submit" class="btn btn-primary"> 
-                  {% if is_edit %} 
-                    Сохранить 
-                  {% else %} 
-                    Добавить 
-                  {% endif %}                
-                </button>  
-              </div> 
+              <hr style="border-top: 1px solid #dcdcdc; margin-top: 3rem; margin-bottom: 2rem;">
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary" style="background-color: #1c3faa; border-radius: 20px;">{% if is_edit %}Сохранить{% else %}Добавить{% endif %}</button>
+              </div>
             </form>
           </div>
         </div>
